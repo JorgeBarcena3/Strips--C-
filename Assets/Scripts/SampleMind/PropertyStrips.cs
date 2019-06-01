@@ -14,5 +14,14 @@ namespace Assets.Scripts.SampleMind
         {
             _tag = tag;
         }
+
+        public override bool Equals(object obj)
+        {
+            var o = obj as PropertyStrips;
+            if (o == null) return false;
+            return o._tag == this._tag;
+        }
+
+       
     }
 }

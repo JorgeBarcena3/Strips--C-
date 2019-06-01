@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.DataStructures;
+using Assets.Scripts.SampleMind;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,6 +25,7 @@ namespace Assets.Scripts
 
         //Planner Variables
         public Planner PlanController { get; private set; }
+        public List<PropertyStrips> estado { get; private set; }
 
 
 
@@ -42,6 +44,7 @@ namespace Assets.Scripts
             //Planner
             PlanController = GetComponentInChildren<Planner>();
             PlanController.SetCharacter(this);
+            estado = new List<PropertyStrips>();
 
 
         }
