@@ -41,15 +41,15 @@ namespace Assets.Scripts.DataStructures
         {
             get
             {
-                return (from CellInfo cell in this.CellInfos where cell.ItemInCell != null && cell.ItemInCell.Type==PlaceableItem.ItemType.Goal select cell).First();
+                return (from CellInfo cell in this.CellInfos where cell.ItemInCell != null && cell.ItemInCell.Type == PlaceableItem.ItemType.Goal select cell).First();
             }
         }
 
         public CellInfo CellWithItem(string tag)
         {
             return (from CellInfo cell in this.CellInfos
-                where cell.ItemInCell != null && cell.ItemInCell.Tag == tag
-                select cell).First();
+                    where cell.ItemInCell != null && cell.ItemInCell.Tag == tag
+                    select cell).First();
         }
 
         public List<CellInfo> EmptyCells
@@ -73,7 +73,7 @@ namespace Assets.Scripts.DataStructures
                     this.CellInfos[x, y] = new CellInfo(x, y);
                 }
             }
-            
+
         }
 
         private void LayoutWallAtRandom(int minWalls, int maxWalls)
@@ -113,22 +113,22 @@ namespace Assets.Scripts.DataStructures
         private void LayoutEnemiesAtRandom(int numEnemies)
         {
             var emptyCells = this.EmptyCells;
-            
+
 
             //Instantiate objects until the randomly chosen limit objectCount is reached
             for (var i = 0; i < numEnemies; i++)
             {
                 var cell = emptyCells[UnityEngine.Random.Range(0, emptyCells.Count)];
-                
+
                 var itemInfo = new PlaceableItem("Enemy_" + i, PlaceableItem.ItemType.Enemy);
-                var enemy = GameObject.Instantiate(manager.enemyTile,cell.GetPosition,//new Vector3(cell.GetPosition.x, cell.GetPosition.y, 0),
+                var enemy = GameObject.Instantiate(manager.enemyTile, cell.GetPosition,//new Vector3(cell.GetPosition.x, cell.GetPosition.y, 0),
                     Quaternion.identity);
                 enemy.name = "Enemy_" + i;
                 enemy.GetComponent<EnemyBehaviour>().BoardManager = manager;
                 var itemlogic = enemy.GetComponentInChildren<ItemLogic>();
                 itemlogic.PlaceableItem = itemInfo;
 
-                
+
                 emptyCells = this.EmptyCells;
             }
 
@@ -139,7 +139,7 @@ namespace Assets.Scripts.DataStructures
             var emptyCells = this.EmptyCells;
             var goalCell = emptyCells[Random.Range(0, emptyCells.Count)];
             goalCell.ItemInCell = new PlaceableItem("Goal", PlaceableItem.ItemType.Goal);
-          //  goalCell.ChangeToNoWalkable();
+            //  goalCell.ChangeToNoWalkable();
             if (forPlanner)
             {
                 GeneratePrerequisites(goalCell.ItemInCell);
@@ -161,7 +161,8 @@ namespace Assets.Scripts.DataStructures
             } while (value >= 0);
             foreach (var i in values)
             {
-                item.Preconditions.Add(generatedObjects[i]);
+                if (generatedObjects[i].Type != PlaceableItem.ItemType.Goal)
+                    item.Preconditions.Add(generatedObjects[i]);
             }
         }
         public void SetupBoard(int seed, bool forPlanner, BoardManager.Count wallCount, BoardManager.Count leverCount, int enemyCount)
@@ -180,7 +181,7 @@ namespace Assets.Scripts.DataStructures
                 LayoutItemsAtRandom(leverCount.minimum, leverCount.maximum);
             }
 
-           
+
 
             LayoutGoalAtRandom(forPlanner);
             if (enemyCount > 0)
@@ -196,10 +197,10 @@ namespace Assets.Scripts.DataStructures
             return info;
         }
 
-        
+
         public GameObject CreateGameObject(BoardManager boardManager)
         {
-      
+
             var board = new GameObject("Board");
             foreach (var cellInfo in this.CellInfos)
             {
